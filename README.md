@@ -1,16 +1,34 @@
-# 4nn0yys-repo: Sileo Release metadata fix
+# 4nn0yys — Sileo Repository
 
-This patch updates the publishing workflow so the deployed site includes a root-level `Release` file as well as `Packages`, `Packages.gz`, `Packages.bz2`, and `Packages.xz`.
+A community-maintained Sileo source for iOS packages, translations and projects.
 
-## Apply it
+**Repository URL:** https://35767686.github.io/4nn0yys-repo/
 
-1. Download and extract this ZIP.
-2. Copy the `.github/workflows/publish.yml` file into the same path in your existing `4nn0yys-repo` repository, replacing the old file.
-3. Commit and push the change to `main`.
-4. Wait for `Publish Sileo Repository` to complete successfully.
-5. In Safari, open `https://35767686.github.io/4nn0yys-repo/Release`. It should display APT release metadata. Open `/Packages` too; it should list the Mochy package.
-6. In Sileo, remove the old failed source and add `https://35767686.github.io/4nn0yys-repo/` again.
+## Featured package: Translated Mochy iOS
 
-## Security note
+A community-maintained Turkish localization of Mochy Music for iOS. Explore music and use YouTube Music browsing and playback features through a translated interface with language and region preferences.
 
-This workflow creates unsigned Release metadata. It is intended to fix repository discovery. APT clients may still warn about an unsigned repository or refuse package refreshes unless the repository is signed and its public key is trusted. Do not ignore a signature or `NO_PUBKEY` warning; use a signed repository setup before distributing packages broadly.
+## Apply this update
+
+1. Keep your existing `.deb` file in `pool/`.
+2. Extract this patch ZIP.
+3. Copy the patch's contents into the root of your existing `4nn0yys-repo` repository. Preserve the `.github` folder structure and replace the existing `README.md`, `index.html`, and `.github/workflows/publish.yml`.
+4. Commit and push to `main`, or run **Publish Sileo Repository** manually from GitHub Actions.
+5. The workflow regenerates the APT indexes and applies the Sileo display name, English description and package icon to package ID `com.puc.mochyios` on every publish.
+6. Refresh the source in Sileo. If the old icon is cached, remove the source and add `https://35767686.github.io/4nn0yys-repo/` again.
+
+## Branding files
+
+- `CydiaIcon.png` and `CydiaIcon@2x.png` / `CydiaIcon@3x.png`: source icon shown by Sileo and other package managers.
+- `PackageIcon.png`: icon shown on the Translated Mochy iOS package page.
+- `index.html`: English repository landing page.
+
+The repository workflow does not rebuild the `.deb`; it changes the published APT metadata Sileo reads. The original package's internal maintainer and executable files remain unchanged.
+
+## GitHub repository About text
+
+Set the repository's **About** description to:
+
+`A community-run Sileo source for Translated Mochy iOS and other iOS packages.`
+
+Set its website to the repository URL above.

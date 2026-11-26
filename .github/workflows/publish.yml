@@ -6,7 +6,11 @@ on:
     paths:
       - 'pool/**'
       - 'index.html'
+      - 'README.md'
+      - 'CydiaIcon*.png'
+      - 'PackageIcon.png'
       - '.github/workflows/publish.yml'
+      - '.github/scripts/**'
   workflow_dispatch:
 
 permissions:
@@ -48,35 +52,41 @@ jobs:
           mkdir -p _site/pool
           cp -v pool/*.deb _site/pool/
           cp index.html _site/index.html
+          cp CydiaIcon*.png _site/ 2>/dev/null || true
+          cp PackageIcon.png _site/PackageIcon.png
           touch _site/.nojekyll
 
-          # Build the flat APT package index at the repository root.
+          # Generate package records, then customize Mochy's Sileo-facing metadata.
           dpkg-scanpackages --multiversion pool /dev/null > _site/Packages
+          python3 .github/scripts/customize_packages.py _site/Packages
+
           gzip -n -9 -c _site/Packages > _site/Packages.gz
           bzip2 -9 -c _site/Packages > _site/Packages.bz2
           xz -9 -c _site/Packages > _site/Packages.xz
 
-          # Sileo looks for Release metadata at the source root.
+          # Sileo/APT source metadata.
           cd _site
           apt-ftparchive \
             -o APT::FTPArchive::Release::Origin="4nn0yys" \
-            -o APT::FTPArchive::Release::Label="4nn0yys Mochy Music" \
+            -o APT::FTPArchive::Release::Label="4nn0yys" \
             -o APT::FTPArchive::Release::Suite="stable" \
             -o APT::FTPArchive::Release::Version="1" \
             -o APT::FTPArchive::Release::Codename="ios" \
             -o APT::FTPArchive::Release::Architectures="iphoneos-arm iphoneos-arm64" \
             -o APT::FTPArchive::Release::Components="main" \
-            -o APT::FTPArchive::Release::Description="4nn0yys Mochy Music Sileo Repository" \
+            -o APT::FTPArchive::Release::Description="4nn0yys - Translated Mochy iOS and other iOS packages" \
             release . > Release
 
           test -s Release
           test -s Packages
-          grep -q '^Package:' Packages
+          grep -q '^Package: com.puc.mochyios$' Packages
+          grep -q '^Name: Translated Mochy iOS$' Packages
+          grep -q '^Icon: https://35767686.github.io/4nn0yys-repo/PackageIcon.png$' Packages
           grep -q '^Filename: pool/' Packages
-          echo "APT files generated:"
-          ls -lh Release Packages Packages.gz Packages.bz2 Packages.xz
-          echo "Package metadata:"
-          grep -E '^(Package|Version|Architecture|Filename):' Packages || true
+          echo "APT repository files generated successfully."
+          ls -lh Release Packages Packages.gz Packages.bz2 Packages.xz CydiaIcon.png PackageIcon.png
+          echo "Sileo package metadata:"
+          grep -A18 '^Package: com.puc.mochyios$' Packages | head -18
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
