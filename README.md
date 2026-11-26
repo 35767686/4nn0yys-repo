@@ -1,22 +1,16 @@
-# Mochy Music Sileo Repository template
+# 4nn0yys-repo: Sileo Release metadata fix
 
-This repository template publishes a simple APT repository for Sileo using GitHub Pages.
+This patch updates the publishing workflow so the deployed site includes a root-level `Release` file as well as `Packages`, `Packages.gz`, `Packages.bz2`, and `Packages.xz`.
 
-## Setup
+## Apply it
 
-1. Create a **public** GitHub repository (for example, `Mochy-Sileo-Repo`).
-2. Copy the contents of this template into the repository's `main` branch.
-3. Put the built `.deb` file in `pool/` (remove `PUT-DEB-FILES-HERE.txt`).
-4. In GitHub, open **Settings → Pages** and set **Source** to **GitHub Actions**.
-5. Commit and push. The `Publish Sileo Repository` workflow generates `Packages`, `Packages.gz`, `Packages.bz2`, and `Packages.xz`, then deploys the site.
-6. When the workflow succeeds, the repository URL will be `https://GITHUB-USERNAME.github.io/REPOSITORY-NAME/`.
-7. Add that URL in Sileo using **Sources → +**.
+1. Download and extract this ZIP.
+2. Copy the `.github/workflows/publish.yml` file into the same path in your existing `4nn0yys-repo` repository, replacing the old file.
+3. Commit and push the change to `main`.
+4. Wait for `Publish Sileo Repository` to complete successfully.
+5. In Safari, open `https://35767686.github.io/4nn0yys-repo/Release`. It should display APT release metadata. Open `/Packages` too; it should list the Mochy package.
+6. In Sileo, remove the old failed source and add `https://35767686.github.io/4nn0yys-repo/` again.
 
-Whenever you add a new `.deb` to `pool/` and push, the repository index is regenerated automatically.
+## Security note
 
-## Important
-
-- Use a public repository if you are on GitHub Free and want a public Pages site.
-- Public repositories and GitHub Pages are visible to everyone. Do not upload API keys, passwords, signing secrets, or personal information.
-- The `.deb` must be a valid Debian package with package metadata. This workflow creates APT indexes; it does not build the `.deb`.
-- If GitHub Pages does not deploy, check the `Publish Sileo Repository` run under **Actions**.
+This workflow creates unsigned Release metadata. It is intended to fix repository discovery. APT clients may still warn about an unsigned repository or refuse package refreshes unless the repository is signed and its public key is trusted. Do not ignore a signature or `NO_PUBKEY` warning; use a signed repository setup before distributing packages broadly.
