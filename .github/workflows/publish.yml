@@ -1,0 +1,68 @@
+name: Publish Sileo Repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pool/**'
+      - 'index.html'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Generate APT repository indexes
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          debs=(pool/*.deb)
+          if (( ${#debs[@]} == 0 )); then
+            echo "No .deb package found. Add your package to the pool/ folder."
+            exit 1
+          fi
+
+          sudo apt-get update
+          sudo apt-get install -y dpkg-dev gzip bzip2 xz-utils
+
+          mkdir -p _site/pool
+          cp -v pool/*.deb _site/pool/
+          cp index.html _site/index.html
+          touch _site/.nojekyll
+
+          dpkg-scanpackages --multiversion pool /dev/null > _site/Packages
+          gzip -n -9 -c _site/Packages > _site/Packages.gz
+          bzip2 -9 -c _site/Packages > _site/Packages.bz2
+          xz -9 -c _site/Packages > _site/Packages.xz
+
+          echo "Generated package index:"
+          grep -E '^(Package|Version|Architecture|Filename):' _site/Packages || true
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
