@@ -1,34 +1,24 @@
-# 4nn0yys — Sileo Repository
+# Mochy iOS — Build 75
 
-A community-maintained Sileo source for iOS packages, translations and projects.
+Bu kaynak paketi Build 74 üzerine ana sayfa önerilerini genişletir.
 
-**Repository URL:** https://35767686.github.io/4nn0yys-repo/
+## Ana sayfa bölümleri
 
-## Featured package: Translated Mochy iOS
+- YouTube Music ana akışından kişiselleştirilmiş öneri rafları (`FEmusic_home`)
+- Seçilen ülke/bölge için YouTube Music listeleri (`FEmusic_charts`)
+- Seçilen dilde yeni müzik araması
+- Kullanıcının yerel dinleme geçmişindeki sanatçılara göre "Bunu dinlediğiniz için" rafları
+- Son dinlenen şarkılar
 
-A community-maintained Turkish localization of Mochy Music for iOS. Explore music and use YouTube Music browsing and playback features through a translated interface with language and region preferences.
+Öneriler dil/bölge başına ayrı önbelleğe alınır. Dil veya bölge değiştiğinde mevcut locale bildirimi önbelleği sıfırlar ve akışı yeniden yükler.
 
-## Apply this update
+## Derleme
 
-1. Keep your existing `.deb` file in `pool/`.
-2. Extract this patch ZIP.
-3. Copy the patch's contents into the root of your existing `4nn0yys-repo` repository. Preserve the `.github` folder structure and replace the existing `README.md`, `index.html`, and `.github/workflows/publish.yml`.
-4. Commit and push to `main`, or run **Publish Sileo Repository** manually from GitHub Actions.
-5. The workflow regenerates the APT indexes and applies the Sileo display name, English description and package icon to package ID `com.puc.mochyios` on every publish.
-6. Refresh the source in Sileo. If the old icon is cached, remove the source and add `https://35767686.github.io/4nn0yys-repo/` again.
+Windows üzerinde kaynakları GitHub deposunun ana dizinine kopyalayın, commit ve push yapın. GitHub Actions macOS üzerinde `.deb` ve `.ipa` üretir. Bu ZIP içinde önceden derlenmiş iOS paketi bulunmaz.
 
-## Branding files
 
-- `CydiaIcon.png` and `CydiaIcon@2x.png` / `CydiaIcon@3x.png`: source icon shown by Sileo and other package managers.
-- `PackageIcon.png`: icon shown on the Translated Mochy iOS package page.
-- `index.html`: English repository landing page.
+## Sileo package metadata (Build 76)
 
-The repository workflow does not rebuild the `.deb`; it changes the published APT metadata Sileo reads. The original package's internal maintainer and executable files remain unchanged.
-
-## GitHub repository About text
-
-Set the repository's **About** description to:
-
-`A community-run Sileo source for Translated Mochy iOS and other iOS packages.`
-
-Set its website to the repository URL above.
+- Package display name: `Translated Mochy iOS`
+- Package description: `A localized iOS music player with YouTube Music browsing, streaming, background playback, and language and region preferences.`
+- Debian package control metadata is defined in `deb/DEBIAN/control` and is embedded in every built `.deb`.

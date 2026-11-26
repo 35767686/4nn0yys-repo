@@ -1,0 +1,10 @@
+Package: com.puc.mochyios
+Name: Translated Mochy iOS
+Version: @VERSION@
+Architecture: iphoneos-arm
+Description: A localized iOS music player with YouTube Music browsing, streaming, background playback, and language and region preferences.
+Depends: firmware (>= 12.2)
+Section: Utilities
+Maintainer: puc <puc@users.noreply.github.com>
+Author: puc <puc@users.noreply.github.com>
+Icon: file:///Applications/MochyiOS.app/AppIcon60x60@2x.png
